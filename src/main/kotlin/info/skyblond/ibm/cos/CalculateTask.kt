@@ -14,15 +14,23 @@ class CalculateTask(
     private val digest = SHA3Utils.getSha3Digest()
 
     override fun call(): String {
-        val obj = cos.getObject(bucketName, objectKey)
-        // TODO avoid archived object in the future
-        //      Currently if is STANDARD, then null is returned
-        return if (obj.objectMetadata.storageClass == null) {
-            logger.info("Calculating file: $objectKey")
-            "SHA3-256:" + digest.calculateSha3(obj.objectContent)
-        } else {
-            logger.info("Unknown storage class `${obj.objectMetadata.storageClass}`: $objectKey")
-            "NONE:unknown storage class `${obj.objectMetadata.storageClass}`"
+        return try {
+            val obj = cos.getObject(bucketName, objectKey)
+            // TODO avoid archived object in the future
+            //      Currently if is STANDARD, then null is returned
+            if (obj.objectMetadata.storageClass == null) {
+                logger.info("Calculating file: $objectKey")
+                if (EnvHelper.getAppDebugEnable()) {
+                    "DEBUG:SKIP"
+                } else {
+                    "SHA3-256:" + digest.calculateSha3(obj.objectContent)
+                }
+            } else {
+                throw Exception("Unknown storage class `${obj.objectMetadata.storageClass}`: $objectKey")
+            }
+        } catch (e: Exception) {
+            logger.error("Error when calculating sha3-256: ", e)
+            "ERROR:" + e.message
         }
     }
 }

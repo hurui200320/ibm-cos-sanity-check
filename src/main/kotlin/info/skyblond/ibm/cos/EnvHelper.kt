@@ -13,6 +13,7 @@ object EnvHelper {
     private const val ENV_APP_PREFIX_KEY = "APP_PREFIX"
     private const val ENV_APP_RESULT_NAME_KEY = "APP_SANITY_NAME"
     private const val APP_RESULT_FILENAME_DEFAULT = "SANITY_CHECK.txt"
+    private const val ENV_APP_DEBUG_ENABLE_KEY = "APP_DEBUG"
 
     private val systemEnv: Map<String, String> = System.getenv()
 
@@ -26,6 +27,7 @@ object EnvHelper {
 
     fun getAppPrefix(): String = systemEnv[ENV_APP_PREFIX_KEY] ?: requiredEnvError(ENV_APP_PREFIX_KEY)
     fun getAppResultFilename(): String = systemEnv[ENV_APP_RESULT_NAME_KEY] ?: APP_RESULT_FILENAME_DEFAULT
+    fun getAppDebugEnable(): Boolean = systemEnv[ENV_APP_DEBUG_ENABLE_KEY] != null
 
     private fun requiredEnvError(envKey: String): Nothing {
         throw IllegalArgumentException("env `$envKey` is required")
