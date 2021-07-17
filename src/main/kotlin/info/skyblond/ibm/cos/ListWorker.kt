@@ -75,12 +75,12 @@ class ListWorker(
                 }
             }
             // by the end, wait each task finished, and save the result to file
-            if (fileList.isNotEmpty() && !EnvHelper.getAppDebugEnable()) {
+            if (prefix.endsWith("/") && fileList.isNotEmpty() && !EnvHelper.getAppDebugEnable()) {
                 val content = fileList.joinToString("\n", "# Prefix: ${getFormattedPrefix()}\n") {
                     it.second.get() + ":" + it.first
                 }
                 S3ClientHelper.createTextFile(
-                    prefix.removeSuffix("/") + "/" + sanityFileName,
+                    prefix + sanityFileName,
                     content
                 )
             }
