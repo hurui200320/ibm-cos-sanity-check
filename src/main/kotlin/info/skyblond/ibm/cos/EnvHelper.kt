@@ -11,6 +11,7 @@ object EnvHelper {
     private const val ENV_COS_BUCKET_NAME_KEY = "COS_BUCKET_NAME"
 
     private const val ENV_APP_PREFIX_KEY = "APP_PREFIX"
+    private const val APP_PREFIX_DEFAULT = ""
     private const val ENV_APP_RESULT_NAME_KEY = "APP_SANITY_NAME"
     private const val APP_RESULT_FILENAME_DEFAULT = "SANITY_CHECK.txt"
     private const val ENV_APP_DEBUG_ENABLE_KEY = "APP_DEBUG"
@@ -25,7 +26,7 @@ object EnvHelper {
     fun getCosBucketLocation(): String = systemEnv[ENV_COS_LOCATION_KEY] ?: requiredEnvError(ENV_COS_LOCATION_KEY)
     fun getCosBucketName(): String = systemEnv[ENV_COS_BUCKET_NAME_KEY] ?: requiredEnvError(ENV_COS_BUCKET_NAME_KEY)
 
-    fun getAppPrefix(): String = systemEnv[ENV_APP_PREFIX_KEY] ?: requiredEnvError(ENV_APP_PREFIX_KEY)
+    fun getAppPrefix(): String = systemEnv[ENV_APP_PREFIX_KEY] ?: APP_PREFIX_DEFAULT
     fun getAppResultFilename(): String = systemEnv[ENV_APP_RESULT_NAME_KEY] ?: APP_RESULT_FILENAME_DEFAULT
     fun getAppDebugEnable(): Boolean = systemEnv[ENV_APP_DEBUG_ENABLE_KEY] != null
 

@@ -13,6 +13,9 @@ object Main {
             logger.info("Bucket name: " + EnvHelper.getCosBucketName())
             logger.info("Prefix: " + EnvHelper.getAppPrefix())
             logger.info("Sanity filename: " + EnvHelper.getAppResultFilename())
+            if (EnvHelper.getAppDebugEnable()) {
+                logger.warn("Debug mode")
+            }
 
             ExecutionPoolHelper.listWorkerPool.submit(
                 ListWorker(EnvHelper.getAppPrefix())

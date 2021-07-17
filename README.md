@@ -22,14 +22,14 @@ The format of `SANITY_CHECK.txt` is:
 
 ```
 # Prefix: /<YOUR_PREFIX>
-SHA3-256:<SHA_RESULT>:<OBJECT_KEY>
-ERROR:<ERROR_MESSAGE>:<OBJECT_KEY>
+SHA3-256:<SHA_RESULT>:<TIMESTAMP>:<OBJECT_KEY>
+ERROR:<ERROR_MESSAGE>:<TIMESTAMP>:<OBJECT_KEY>
 ...
 ```
 
 The first line start with `#` and it gives the prefix of current folder.
 
-Start from the second line, each line gives `<FORMAT>:<PAYLOAD>:<OBJECT_KEY>`, `<FORMAT>` has three options: `SHA3-256`, `ERROR` and `DEBUG`. For `SHA3-256`, `<PAYLOAD>` gives the SHA3-256 result of object. `ERROR` means something goes wrong when calculating the hash, and the `<PAYLOAD>` gives the error message. For `DEBUG`, the payload is always `SKIP`.
+Start from the second line, each line gives `<FORMAT>:<PAYLOAD>:<TIMESTAMP>:<OBJECT_KEY>`, `<FORMAT>` has three options: `SHA3-256`, `ERROR` and `DEBUG`. For `SHA3-256`, `<PAYLOAD>` gives the SHA3-256 result of object. `ERROR` means something goes wrong when calculating the hash, and the `<PAYLOAD>` gives the error message. For `DEBUG`, the payload is always `SKIP`. The `<TIMESTAMP>` counts in milliseconds.
 
 If there are something wrong during the listing file or initialization stage, please check the log, there should be a ERROR message.
 
@@ -63,7 +63,7 @@ Please do notice, when running this docker in Code Engine, **please use Direct e
 
 ### `APP_PREFIX`
 
-**Required.** This is the prefix. You cannot set it to empty string in IBM Cloud Code Engine console, also I don't recommend running this docker with root folder, since I cannot make sure my code will function correctly. So try to limit the scope by using the prefix.
+**Not Required, but good to have one.** This is the prefix. You cannot set it to empty string in IBM Cloud Code Engine console, so when you not set that, default value is empty, aka the root of your bucket. However I don't recommend running this docker with root folder, since I cannot make sure my code will function correctly. So try to limit the scope by using the prefix.
 
 ### `APP_SANITY_NAME`
 
