@@ -25,6 +25,7 @@ object SHA3Utils {
         return this.digest().toHex()
     }
 
+    // default 64MB buffer
     fun MessageDigest.calculateSha3(inputStream: InputStream): String =
-        this.calculateSha3(inputStream, 64 * 1024)
+        this.calculateSha3(inputStream, 64 * 1024 * 1024)
 }
