@@ -33,7 +33,6 @@ class ListWorker(
                     .forEach {
                         val key = it.drop(3).joinToString(":")
                         val value = it.take(3).joinToString(":")
-                        logger.info("Load old result `$value` for object $key")
                         oldResultMap[key] = value
                     }
             }
