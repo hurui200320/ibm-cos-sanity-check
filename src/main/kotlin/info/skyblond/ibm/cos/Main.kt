@@ -16,6 +16,9 @@ object Main {
             if (EnvHelper.getAppDebugEnable()) {
                 logger.warn("Debug mode")
             }
+            if (!EnvHelper.getAllowReuse()) {
+                logger.warn("Reuse disabled")
+            }
 
             ExecutionPoolHelper.listWorkerPool.submit(
                 ListWorker(EnvHelper.getAppPrefix())
