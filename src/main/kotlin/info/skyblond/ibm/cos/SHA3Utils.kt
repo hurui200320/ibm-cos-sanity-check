@@ -21,7 +21,6 @@ object SHA3Utils {
         while (inputStream.read(buffer, 0, buffer.size).also { bytesReadCount = it } != -1) {
             this.update(buffer, 0, bytesReadCount)
         }
-        inputStream.close()
         return this.digest().toHex()
     }
 

@@ -29,7 +29,7 @@ ERROR:<ERROR_MESSAGE>:<TIMESTAMP>:<OBJECT_KEY>
 
 The first line start with `#` and it gives the prefix of current folder.
 
-Start from the second line, each line gives `<FORMAT>:<PAYLOAD>:<TIMESTAMP>:<OBJECT_KEY>`, `<FORMAT>` has three options: `SHA3-256`, `ERROR` and `DEBUG`. For `SHA3-256`, `<PAYLOAD>` gives the SHA3-256 result of object. `ERROR` means something goes wrong when calculating the hash, and the `<PAYLOAD>` gives the error message. For `DEBUG`, the payload is always `SKIP`. The `<TIMESTAMP>` counts in milliseconds.
+Start from the second line, each line gives `<FORMAT>:<PAYLOAD>:<TIMESTAMP>:<OBJECT_KEY>`, `<FORMAT>` has three options: `SHA3-256`, `ERROR` and `DEBUG`. For `SHA3-256`, `<PAYLOAD>` gives the SHA3-256 result of object. `ERROR` means something goes wrong when calculating the hash, and the `<PAYLOAD>` gives the error message. For `DEBUG`, the payload is always `SKIP`. The `<TIMESTAMP>` counts in milliseconds, it is the last modified time of the object.
 
 If there are something wrong during the listing file or initialization stage, please check the log, there should be a ERROR message.
 
@@ -45,17 +45,29 @@ Set the IBM IAM endpoint URL, this is not required, the default value is `https:
 
 Please do notice, when running this docker in Code Engine, **please use Direct endpoint for free bandwidth, use public endpoint will cause public endpoint fee.**
 
-### `COS_APIKEY`
+### `COS_CREDENTIAL`
 
-**Required.** This is your API key.
+**Required.** This is the JSON credential, just copy it from your IBM COS console, it should looks like this:
 
-### `COS_SERVICE_CRN`
-
-**Required.** This is your service CRN, you can find it in your access credential.
+```
+{
+  "apikey": "<SOMETHING>",
+  "cos_hmac_keys": {
+    "access_key_id": "<SOMETHING>",
+    "secret_access_key": "<SOMETHING>"
+  },
+  "endpoints": "<SOMETHING>",
+  "iam_apikey_description": "<SOMETHING>",
+  "iam_apikey_name": "<SOMETHING>",
+  "iam_role_crn": "<SOMETHING>",
+  "iam_serviceid_crn": "<SOMETHING>",
+  "resource_instance_id": "<SOMETHING>"
+}
+```
 
 ### `COS_BUCKET_LOCATION`
 
-**Required.** Though it is not used, since this parameter is only used when doing HMAC things, but create COS client require this parameter.
+**Required.** If your credential use HMAC, then make sure this location is correct. Otherwise the library won't be able to talk with IBM COS service.
 
 ### `COS_BUCKET_NAME`
 
@@ -72,6 +84,10 @@ This is the result file name. This is not required, the default value is `SANITY
 ### `APP_DEBUG`
 
 This parameter will put program in debug mode. In debug mode, the calculation will not performed, thus it always gives `SKIP` as result. Also, in debug mode, the result will not be write into the bucket.
+
+### `APP_DISABLE_REUSE`
+
+Existence of this parameter will disable the reuse of the result. By default the program will try to read the old sanity file and reuse the result to save some vCPU time (if and only if the timestamp in result matched the last modified time of the object). But if you want to override this, just set this env to any value.
 
 ## TODOs
 

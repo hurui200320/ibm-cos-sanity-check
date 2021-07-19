@@ -3,7 +3,6 @@ package info.skyblond.ibm.cos
 import com.ibm.cloud.objectstorage.services.s3.model.ListObjectsV2Request
 import com.ibm.cloud.objectstorage.services.s3.model.ListObjectsV2Result
 import org.slf4j.LoggerFactory
-import java.nio.charset.StandardCharsets
 import java.util.concurrent.Future
 
 class ListWorker(
@@ -23,10 +22,15 @@ class ListWorker(
     override fun run() {
         try {
             // check the sanity file
-            if (prefix.endsWith("/") && cos.doesObjectExist(bucketName, prefix + sanityFileName)) {
+            if (prefix.endsWith("/")
+                && EnvHelper.getAllowReuse()
+                && cos.doesObjectExist(bucketName, prefix + sanityFileName)
+                // make sure the sanity file is not archived before read
+                && S3ClientHelper.objectNotArchived(bucketName, prefix + sanityFileName)
+            ) {
                 cos.getObject(bucketName, prefix + sanityFileName)
                     .objectContent
-                    .use { it.bufferedReader(StandardCharsets.UTF_8).readLines() }
+                    .use { it.bufferedReader(Charsets.UTF_8).readLines() }
                     .filter { it.startsWith("${Constants.SANITY_RESULT_SHA3_PREFIX}:") }
                     .map { it.split(":") }
                     .filter { it.size >= 4 } // type:payload:timestamp:key
