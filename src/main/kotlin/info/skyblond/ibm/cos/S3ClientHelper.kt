@@ -58,15 +58,18 @@ object S3ClientHelper {
         client.putObject(req)
     }
 
-    fun objectNotArchived(bucketName: String, objectKey: String): Boolean =
-        objectNotArchived(client.getObjectMetadata(bucketName, objectKey))
+    fun objectCanRead(bucketName: String, objectKey: String): Boolean =
+        objectCanRead(client.getObjectMetadata(bucketName, objectKey))
 
-    /**
-     * ObjectSummary gives only 3 possible values: STANDARD,ACCELERATED,GLACIER.
-     * ObjectMetadata gives null if is STANDARD.
-     * Only standard can be fetched directly, rest of them need restore first.
-     * So if storageClass == null, then it's not archived.
-     * */
-    fun objectNotArchived(meta: ObjectMetadata): Boolean = meta.storageClass == null
+    fun objectCanRead(meta: ObjectMetadata): Boolean {
+        return when {
+            // This means standard
+            meta.storageClass == null -> true
+            // Archived, but restored to standard
+            meta.ibmRestoredCopyStorageClass == "STANDARD" -> true
+            // TODO further information is required.
+            else -> false
+        }
+    }
 
 }

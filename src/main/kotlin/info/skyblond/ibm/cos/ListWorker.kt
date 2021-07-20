@@ -26,7 +26,7 @@ class ListWorker(
                 && EnvHelper.getAllowReuse()
                 && cos.doesObjectExist(bucketName, prefix + sanityFileName)
                 // make sure the sanity file is not archived before read
-                && S3ClientHelper.objectNotArchived(bucketName, prefix + sanityFileName)
+                && S3ClientHelper.objectCanRead(bucketName, prefix + sanityFileName)
             ) {
                 cos.getObject(bucketName, prefix + sanityFileName)
                     .objectContent

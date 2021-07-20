@@ -38,7 +38,9 @@ class CalculateTask(
                 return "${Constants.SANITY_RESULT_SHA3_PREFIX}:$resultHash:$resultTimestamp"
             }
 
-            require(S3ClientHelper.objectNotArchived(meta)) { "Unsupported storage class `${meta.storageClass}`" }
+            require(S3ClientHelper.objectCanRead(meta)) {
+                "Storage class is `${meta.storageClass}`, but restored copy storage class is ${meta.ibmRestoredCopyStorageClass}"
+            }
 
             // use file content
             cos.getObject(bucketName, objectKey).objectContent.use {
@@ -52,7 +54,7 @@ class CalculateTask(
                 }
             }
         } catch (e: Exception) {
-            logger.error("Error when calculating sha3-256: ", e)
+            logger.error("Error when calculating sha3-256 for `$objectKey`: ", e)
             val message = e.message?.replace(":", "_")
             "${Constants.SANITY_RESULT_ERROR_PREFIX}:$message:-1"
         }
